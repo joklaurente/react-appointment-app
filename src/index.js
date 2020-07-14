@@ -8,49 +8,63 @@ library.add(faTrash, faEdit)
 
 class AppointmentDashboard extends React.Component {
   state = {
-    appointments: [
-      {
-        id: 1,
-        patient: 'A simple appointment',
-        schedule: 'Jude Ben',
-        comment: `Lorem ipsum dolor sit amet, consectetur
-                    adipiscing elit, sed do eiusmod tempor incididunt
-                    ut labore et dolore magna aliqua. Ut enim ad minim
-                    veniam, quis nostrud`
-      },
-      {
-        id: 2,
-        patient: 'A appointment of secrets',
-        schedule: 'James John',
-        comment: `Sed ut perspiciatis unde omnis iste natus
-                    error sit voluptatem accusantium doloremque laudantium,
-                    totam rem aperiam, eaque ipsa quae ab illo inventore
-                    veritatis et quasi architecto beatae vitae dicta sunt
-                    explicabo.`
-      }
-    ]
+    appointments: []
+  }
+
+  componentDidMount() {
+    fetch('http://localhost:8000/api/appointments/')
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ appointments: data });
+      });
   }
 
   createNewAppointment = (appointment) => {
-    appointment.id = Math.floor(Math.random() * 1000);
-    this.setState({ appointments: this.state.appointments.concat([appointment]) });
+    fetch('http://localhost:8000/api/appointments/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(appointment),
+    })
+      .then(response => response.json())
+      .then(appointment => {
+        this.setState({ appointments: this.state.appointments.concat([appointment]) });
+      });
   }
 
   updateAppointment = (newAppointment) => {
-    const newAppointments = this.state.appointments.map(appointment => {
-      if (appointment.id === newAppointment.id) {
-        return Object.assign({}, newAppointment)
-      } else {
-        return appointment;
-      }
-    });
-
-    this.setState({ appointments: newAppointments });
+    fetch(`http://localhost:8000/api/appointments/${newAppointment.id}/`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newAppointment),
+    }).then(response => response.json())
+      .then(newAppointment => {
+        const newAppointments = this.state.appointments.map(appointment => {
+          if (appointment.id === newAppointment.id) {
+            return Object.assign({}, newAppointment)
+          } else {
+            return appointment;
+          }
+        });
+        this.setState({ appointments: newAppointments });
+      });
   }
 
   deleteAppointment = (appointmentId) => {
-    this.setState({ appointments: this.state.appointments.filter(appointment => appointment.id !== appointmentId) })
+    fetch(`http://localhost:8000/api/appointments/${appointmentId}/`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(() => {
+        this.setState({ appointments: this.state.appointments.filter(appointment => appointment.id !== appointmentId) })
+      });
   }
+
   render() {
     return (
       <main className="d-flex justify-content-center my-4">
@@ -146,7 +160,7 @@ class Appointment extends React.Component {
       <div className="card" /* style="width: 18rem;" */>
         <div className="card-header d-flex justify-content-between">
           <span>
-            <strong>Title: </strong>{this.props.patient}
+            <strong>Patient: </strong>{this.props.patient}
           </span>
           <div>
             <span onClick={this.props.onEditClick} className="mr-2"><FontAwesomeIcon icon={faEdit} /></span>
@@ -157,7 +171,7 @@ class Appointment extends React.Component {
           {this.props.comment}
         </div>
         <div className="card-footer">
-          <strong>Author:</strong>  {this.props.schedule}
+          <strong>Schedule:</strong>  {this.props.schedule}
         </div>
       </div>
     );
@@ -174,13 +188,13 @@ class AppointmentForm extends React.Component {
     evt.preventDefault();
     this.props.onFormSubmit({ ...this.state });
   }
-  handleTitleUpdate = (evt) => {
+  handlePatientUpdate = (evt) => {
     this.setState({ patient: evt.target.value });
   }
-  handleAuthorUpdate = (evt) => {
+  handleScheduleUpdate = (evt) => {
     this.setState({ schedule: evt.target.value });
   }
-  handleDescriptionUpdate = (evt) => {
+  handleCommentUpdate = (evt) => {
     this.setState({ comment: evt.target.value });
   }
   render() {
@@ -189,31 +203,31 @@ class AppointmentForm extends React.Component {
       <form onSubmit={this.handleFormSubmit}>
         <div className="form-group">
           <label>
-            Title
+            Patient
           </label>
           <input type="text" placeholder="Enter a patient"
-            value={this.state.patient} onChange={this.handleTitleUpdate}
+            value={this.state.patient} onChange={this.handlePatientUpdate}
             className="form-control"
           />
         </div>
 
         <div className="form-group">
           <label>
-            Author
+            Schedule
           </label>
-          <input type="text" placeholder="Author's name"
-            value={this.state.schedule} onChange={this.handleAuthorUpdate}
+          <input type="text" placeholder="Schedule's name"
+            value={this.state.schedule} onChange={this.handleScheduleUpdate}
             className="form-control"
           />
         </div>
 
         <div className="form-group">
           <label>
-            Description
+            Comment
           </label>
-          <textarea className="form-control" placeholder="Appointment Description"
+          <textarea className="form-control" placeholder="Appointment Comment"
             rows="5" value={this.state.comment}
-            onChange={this.handleDescriptionUpdate}
+            onChange={this.handleCommentUpdate}
           >
             {this.state.comment}
           </textarea>
