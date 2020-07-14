@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
- 
-library.add(faTrash, faEdit)
 
 class AppointmentDashboard extends React.Component {
   state = {
@@ -168,10 +165,17 @@ class Appointment extends React.Component {
           </div>
         </div>
         <div className="card-body">
-          {this.props.comment}
+          <strong>Schedule: </strong>
+          {new Intl.DateTimeFormat('default', {
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric'
+          }).format(new Date(this.props.schedule_start))}
         </div>
         <div className="card-footer">
-          <strong>Schedule:</strong>  {this.props.schedule_start}
+          {this.props.comment}
         </div>
       </div>
     );
@@ -215,7 +219,7 @@ class AppointmentForm extends React.Component {
           <label>
             Schedule
           </label>
-          <input type="text" placeholder="Schedule's name"
+          <input type="datetime-local" placeholder="Schedule's name"
             value={this.state.schedule_start} onChange={this.handleScheduleUpdate}
             className="form-control"
           />
