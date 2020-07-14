@@ -6,23 +6,23 @@ import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
  
 library.add(faTrash, faEdit)
 
-class BookDashboard extends React.Component {
+class AppointmentDashboard extends React.Component {
   state = {
-    books: [
+    appointments: [
       {
         id: 1,
-        title: 'A simple book',
-        author: 'Jude Ben',
-        description: `Lorem ipsum dolor sit amet, consectetur
+        patient: 'A simple appointment',
+        schedule: 'Jude Ben',
+        comment: `Lorem ipsum dolor sit amet, consectetur
                     adipiscing elit, sed do eiusmod tempor incididunt
                     ut labore et dolore magna aliqua. Ut enim ad minim
                     veniam, quis nostrud`
       },
       {
         id: 2,
-        title: 'A book of secrets',
-        author: 'James John',
-        description: `Sed ut perspiciatis unde omnis iste natus
+        patient: 'A appointment of secrets',
+        schedule: 'James John',
+        comment: `Sed ut perspiciatis unde omnis iste natus
                     error sit voluptatem accusantium doloremque laudantium,
                     totam rem aperiam, eaque ipsa quae ab illo inventore
                     veritatis et quasi architecto beatae vitae dicta sunt
@@ -31,37 +31,37 @@ class BookDashboard extends React.Component {
     ]
   }
 
-  createNewBook = (book) => {
-    book.id = Math.floor(Math.random() * 1000);
-    this.setState({ books: this.state.books.concat([book]) });
+  createNewAppointment = (appointment) => {
+    appointment.id = Math.floor(Math.random() * 1000);
+    this.setState({ appointments: this.state.appointments.concat([appointment]) });
   }
 
-  updateBook = (newBook) => {
-    const newBooks = this.state.books.map(book => {
-      if (book.id === newBook.id) {
-        return Object.assign({}, newBook)
+  updateAppointment = (newAppointment) => {
+    const newAppointments = this.state.appointments.map(appointment => {
+      if (appointment.id === newAppointment.id) {
+        return Object.assign({}, newAppointment)
       } else {
-        return book;
+        return appointment;
       }
     });
 
-    this.setState({ books: newBooks });
+    this.setState({ appointments: newAppointments });
   }
 
-  deleteBook = (bookId) => {
-    this.setState({ books: this.state.books.filter(book => book.id !== bookId) })
+  deleteAppointment = (appointmentId) => {
+    this.setState({ appointments: this.state.appointments.filter(appointment => appointment.id !== appointmentId) })
   }
   render() {
     return (
       <main className="d-flex justify-content-center my-4">
         <div className="col-5">
-          <BookList
-            books={this.state.books}
-            onDeleteClick={this.deleteBook}
-            onUpdateClick={this.updateBook}
+          <AppointmentList
+            appointments={this.state.appointments}
+            onDeleteClick={this.deleteAppointment}
+            onUpdateClick={this.updateAppointment}
           />
-          <ToggleableBookForm
-            onBookCreate={this.createNewBook}
+          <ToggleableAppointmentForm
+            onAppointmentCreate={this.createNewAppointment}
           />
         </div>
       </main>
@@ -69,28 +69,28 @@ class BookDashboard extends React.Component {
   }
 }
 
-class BookList extends React.Component {
+class AppointmentList extends React.Component {
   render() {
-    const books = this.props.books.map(book => (
-      <EditableBook
-        key={book.id}
-        id={book.id}
-        title={book.title}
-        author={book.author}
-        description={book.description}
+    const appointments = this.props.appointments.map(appointment => (
+      <EditableAppointment
+        key={appointment.id}
+        id={appointment.id}
+        patient={appointment.patient}
+        schedule={appointment.schedule}
+        comment={appointment.comment}
         onDeleteClick={this.props.onDeleteClick}
         onUpdateClick={this.props.onUpdateClick}
-      ></EditableBook>
+      ></EditableAppointment>
     ));
     return (
       <div>
-        {books}
+        {appointments}
       </div>
     );
   }
 }
 
-class EditableBook extends React.Component {
+class EditableAppointment extends React.Component {
   state = {
     inEditMode: false
   };
@@ -103,30 +103,30 @@ class EditableBook extends React.Component {
   handleDelete = () => {
     this.props.onDeleteClick(this.props.id);
   }
-  handleUpdate = (book) => {
+  handleUpdate = (appointment) => {
     this.leaveEditMode()
-    book.id = this.props.id;
-    this.props.onUpdateClick(book);
+    appointment.id = this.props.id;
+    this.props.onUpdateClick(appointment);
   }
   render() {
     const component = () => {
       if (this.state.inEditMode) {
         return (
-          <BookForm
+          <AppointmentForm
             id={this.props.id}
-            title={this.props.title}
-            author={this.props.author}
-            description={this.props.description}
+            patient={this.props.patient}
+            schedule={this.props.schedule}
+            comment={this.props.comment}
             onCancelClick={this.leaveEditMode}
             onFormSubmit={this.handleUpdate}
           />
         );
       }
       return (
-        <Book
-          title={this.props.title}
-          author={this.props.author}
-          description={this.props.description}
+        <Appointment
+          patient={this.props.patient}
+          schedule={this.props.schedule}
+          comment={this.props.comment}
           onEditClick={this.enterEditMode}
           onDeleteClick={this.handleDelete}
         />
@@ -140,13 +140,13 @@ class EditableBook extends React.Component {
   }
 }
 
-class Book extends React.Component {
+class Appointment extends React.Component {
   render() {
     return (
       <div className="card" /* style="width: 18rem;" */>
         <div className="card-header d-flex justify-content-between">
           <span>
-            <strong>Title: </strong>{this.props.title}
+            <strong>Title: </strong>{this.props.patient}
           </span>
           <div>
             <span onClick={this.props.onEditClick} className="mr-2"><FontAwesomeIcon icon={faEdit} /></span>
@@ -154,45 +154,45 @@ class Book extends React.Component {
           </div>
         </div>
         <div className="card-body">
-          {this.props.description}
+          {this.props.comment}
         </div>
         <div className="card-footer">
-          <strong>Author:</strong>  {this.props.author}
+          <strong>Author:</strong>  {this.props.schedule}
         </div>
       </div>
     );
   }
 }
 
-class BookForm extends React.Component {
+class AppointmentForm extends React.Component {
   state = {
-    title: this.props.title || '',
-    author: this.props.author || '',
-    description: this.props.description || ''
+    patient: this.props.patient || '',
+    schedule: this.props.schedule || '',
+    comment: this.props.comment || ''
   }
   handleFormSubmit = (evt) => {
     evt.preventDefault();
     this.props.onFormSubmit({ ...this.state });
   }
   handleTitleUpdate = (evt) => {
-    this.setState({ title: evt.target.value });
+    this.setState({ patient: evt.target.value });
   }
   handleAuthorUpdate = (evt) => {
-    this.setState({ author: evt.target.value });
+    this.setState({ schedule: evt.target.value });
   }
   handleDescriptionUpdate = (evt) => {
-    this.setState({ description: evt.target.value });
+    this.setState({ comment: evt.target.value });
   }
   render() {
-    const buttonText = this.props.id ? 'Update Book' : 'Create Book';
+    const buttonText = this.props.id ? 'Update Appointment' : 'Create Appointment';
     return (
       <form onSubmit={this.handleFormSubmit}>
         <div className="form-group">
           <label>
             Title
           </label>
-          <input type="text" placeholder="Enter a title"
-            value={this.state.title} onChange={this.handleTitleUpdate}
+          <input type="text" placeholder="Enter a patient"
+            value={this.state.patient} onChange={this.handleTitleUpdate}
             className="form-control"
           />
         </div>
@@ -202,7 +202,7 @@ class BookForm extends React.Component {
             Author
           </label>
           <input type="text" placeholder="Author's name"
-            value={this.state.author} onChange={this.handleAuthorUpdate}
+            value={this.state.schedule} onChange={this.handleAuthorUpdate}
             className="form-control"
           />
         </div>
@@ -211,11 +211,11 @@ class BookForm extends React.Component {
           <label>
             Description
           </label>
-          <textarea className="form-control" placeholder="Book Description"
-            rows="5" value={this.state.description}
+          <textarea className="form-control" placeholder="Appointment Description"
+            rows="5" value={this.state.comment}
             onChange={this.handleDescriptionUpdate}
           >
-            {this.state.description}
+            {this.state.comment}
           </textarea>
         </div>
         <div className="form-group d-flex justify-content-between">
@@ -231,7 +231,7 @@ class BookForm extends React.Component {
   }
 }
 
-class ToggleableBookForm extends React.Component {
+class ToggleableAppointmentForm extends React.Component {
   state = {
     inCreateMode: false
   }
@@ -244,17 +244,17 @@ class ToggleableBookForm extends React.Component {
   handleCancleClick = () => {
     this.leaveCreateMode();
   }
-  handleFormSubmit = (book) => {
+  handleFormSubmit = (appointment) => {
     this.leaveCreateMode();
-    this.props.onBookCreate(book);
+    this.props.onAppointmentCreate(appointment);
   }
   render() {
     if (this.state.inCreateMode) {
       return (
         <div className="mb-3 p-4" style={{ boxShadow: '0 0 10px #ccc' }} >
-          <BookForm
+          <AppointmentForm
             onFormSubmit={this.handleFormSubmit}
-            onCancelClick={this.handleCancleClick}></BookForm>
+            onCancelClick={this.handleCancleClick}></AppointmentForm>
         </div>
 
       )
@@ -267,4 +267,4 @@ class ToggleableBookForm extends React.Component {
   }
 }
 
-ReactDOM.render(<BookDashboard />, document.getElementById('root'));
+ReactDOM.render(<AppointmentDashboard />, document.getElementById('root'));
