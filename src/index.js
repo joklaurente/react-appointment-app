@@ -90,7 +90,7 @@ class AppointmentList extends React.Component {
         key={appointment.id}
         id={appointment.id}
         patient={appointment.patient}
-        schedule={appointment.schedule}
+        schedule_start={appointment.schedule_start}
         comment={appointment.comment}
         onDeleteClick={this.props.onDeleteClick}
         onUpdateClick={this.props.onUpdateClick}
@@ -129,7 +129,7 @@ class EditableAppointment extends React.Component {
           <AppointmentForm
             id={this.props.id}
             patient={this.props.patient}
-            schedule={this.props.schedule}
+            schedule_start={this.props.schedule_start}
             comment={this.props.comment}
             onCancelClick={this.leaveEditMode}
             onFormSubmit={this.handleUpdate}
@@ -139,7 +139,7 @@ class EditableAppointment extends React.Component {
       return (
         <Appointment
           patient={this.props.patient}
-          schedule={this.props.schedule}
+          schedule_start={this.props.schedule_start}
           comment={this.props.comment}
           onEditClick={this.enterEditMode}
           onDeleteClick={this.handleDelete}
@@ -171,7 +171,7 @@ class Appointment extends React.Component {
           {this.props.comment}
         </div>
         <div className="card-footer">
-          <strong>Schedule:</strong>  {this.props.schedule}
+          <strong>Schedule:</strong>  {this.props.schedule_start}
         </div>
       </div>
     );
@@ -181,7 +181,7 @@ class Appointment extends React.Component {
 class AppointmentForm extends React.Component {
   state = {
     patient: this.props.patient || '',
-    schedule: this.props.schedule || '',
+    schedule_start: this.props.schedule_start || '',
     comment: this.props.comment || ''
   }
   handleFormSubmit = (evt) => {
@@ -192,7 +192,7 @@ class AppointmentForm extends React.Component {
     this.setState({ patient: evt.target.value });
   }
   handleScheduleUpdate = (evt) => {
-    this.setState({ schedule: evt.target.value });
+    this.setState({ schedule_start: evt.target.value });
   }
   handleCommentUpdate = (evt) => {
     this.setState({ comment: evt.target.value });
@@ -216,7 +216,7 @@ class AppointmentForm extends React.Component {
             Schedule
           </label>
           <input type="text" placeholder="Schedule's name"
-            value={this.state.schedule} onChange={this.handleScheduleUpdate}
+            value={this.state.schedule_start} onChange={this.handleScheduleUpdate}
             className="form-control"
           />
         </div>
