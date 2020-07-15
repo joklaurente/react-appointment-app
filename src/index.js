@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
+import DayPicker from 'react-day-picker';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
 
 class AppointmentDashboard extends React.Component {
   state = {
@@ -87,7 +90,9 @@ class AppointmentList extends React.Component {
         key={appointment.id}
         id={appointment.id}
         patient={appointment.patient}
-        schedule_start={appointment.schedule_start}
+        appt_date={appointment.appt_date}
+        start_time={appointment.start_time}
+        end_time={appointment.end_time}
         comment={appointment.comment}
         onDeleteClick={this.props.onDeleteClick}
         onUpdateClick={this.props.onUpdateClick}
@@ -126,7 +131,9 @@ class EditableAppointment extends React.Component {
           <AppointmentForm
             id={this.props.id}
             patient={this.props.patient}
-            schedule_start={this.props.schedule_start}
+            appt_date={this.props.appt_date}
+            start_time={this.props.start_time}
+            end_time={this.props.end_time}
             comment={this.props.comment}
             onCancelClick={this.leaveEditMode}
             onFormSubmit={this.handleUpdate}
@@ -136,7 +143,9 @@ class EditableAppointment extends React.Component {
       return (
         <Appointment
           patient={this.props.patient}
-          schedule_start={this.props.schedule_start}
+          appt_date={this.props.appt_date}
+          start_time={this.props.start_time}
+          end_time={this.props.end_time}
           comment={this.props.comment}
           onEditClick={this.enterEditMode}
           onDeleteClick={this.handleDelete}
@@ -165,14 +174,7 @@ class Appointment extends React.Component {
           </div>
         </div>
         <div className="card-body">
-          <strong>Schedule: </strong>
-          {new Intl.DateTimeFormat('default', {
-            month: 'long',
-            day: '2-digit',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric'
-          }).format(new Date(this.props.schedule_start))}
+          <strong>Schedule: </strong> {this.props.appt_date}, {this.props.start_time} - {this.props.end_time}
         </div>
         <div className="card-footer">
           {this.props.comment}
@@ -185,7 +187,9 @@ class Appointment extends React.Component {
 class AppointmentForm extends React.Component {
   state = {
     patient: this.props.patient || '',
-    schedule_start: this.props.schedule_start || '',
+    appt_date: this.props.appt_date || '',
+    start_time: this.props.start_time || '',
+    end_time: this.props.end_time || '',
     comment: this.props.comment || ''
   }
   handleFormSubmit = (evt) => {
@@ -195,12 +199,20 @@ class AppointmentForm extends React.Component {
   handlePatientUpdate = (evt) => {
     this.setState({ patient: evt.target.value });
   }
-  handleScheduleUpdate = (evt) => {
-    this.setState({ schedule_start: evt.target.value });
+  handleScheduleDateUpdate = (evt) => {
+    this.setState({ appt_date: evt.target.value });
+  }
+  handleScheduleStartUpdate = (evt) => {
+    this.setState({ start_time: evt.target.value });
+  }
+  handleScheduleEndUpdate = (evt) => {
+    this.setState({ end_time: evt.target.value });
   }
   handleCommentUpdate = (evt) => {
     this.setState({ comment: evt.target.value });
   }
+
+  // onChange = appt_date => this.setState({ appt_date })
   render() {
     const buttonText = this.props.id ? 'Update Appointment' : 'Create Appointment';
     return (
@@ -217,10 +229,42 @@ class AppointmentForm extends React.Component {
 
         <div className="form-group">
           <label>
-            Schedule
+            Schedule From
           </label>
-          <input type="datetime-local" placeholder="Schedule's name"
-            value={this.state.schedule_start} onChange={this.handleScheduleUpdate}
+          <div>
+            {/* <DayPickerInput
+              value={this.state.appt_date}
+              onChange={this.handleScheduleStartUpdate}
+              dayPickerProps={{
+                disabledDays: {
+                  daysOfWeek: [0, 7],
+                },
+              }}
+              className="form-control"
+            /> */}
+            <input type="date" placeholder="Enter a patient"
+              value={this.state.appt_date} onChange={this.handleScheduleDateUpdate}
+              className="form-control"
+            />
+            </div>
+        </div>
+
+        <div className="form-group">
+          <label>
+            From
+          </label>
+          <input type="time" min="09:00" max="16:59" required placeholder="From"
+            value={this.state.start_time} onChange={this.handleScheduleStartUpdate}
+            className="form-control"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>
+            To
+          </label>
+          <input type="time" min="09:01" max="17:00" required placeholder="To"
+            value={this.state.end_time} onChange={this.handleScheduleEndUpdate}
             className="form-control"
           />
         </div>
