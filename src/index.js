@@ -2,13 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faEdit, faPlus } from '@fortawesome/free-solid-svg-icons'
-import DayPicker from 'react-day-picker';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import 'react-day-picker/lib/style.css';
 
 class AppointmentDashboard extends React.Component {
   state = {
-    appointments: []
+    appointments: [],
+    errorMessage: ""
   }
 
   componentDidMount() {
@@ -27,9 +25,33 @@ class AppointmentDashboard extends React.Component {
       },
       body: JSON.stringify(appointment),
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response.status === 400) {
+          this.setState({ errorMessage: "Something went wrong!" });
+        }
+        return response.json();
+      })
       .then(appointment => {
-        this.setState({ appointments: this.state.appointments.concat([appointment]) });
+        console.log(appointment)
+
+        if (appointment.non_field_errors){
+          if (appointment.non_field_errors[0] === "Sunday") {
+            this.setState({ errorMessage: "No Appoinments on Sundays" });
+          }
+          else if (appointment.non_field_errors[0] === "Invalid time range") {
+            this.setState({ errorMessage: "Invalid time range" });
+          }
+
+          else if (appointment.non_field_errors[0] === "Overbooking") {
+            this.setState({ errorMessage: "Overbooking" });
+          }
+          else {
+            this.setState({ errorMessage: appointment.non_field_errors[0] });
+          }
+        }
+        else{
+          this.setState({ appointments: this.state.appointments.concat([appointment]) });
+        }
       });
   }
 
@@ -69,6 +91,8 @@ class AppointmentDashboard extends React.Component {
     return (
       <main className="d-flex justify-content-center my-4">
         <div className="col-5">
+          {this.state.errorMessage &&
+            <p className="error"> {this.state.errorMessage} </p>}
           <AppointmentList
             appointments={this.state.appointments}
             onDeleteClick={this.deleteAppointment}
