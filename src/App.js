@@ -42,16 +42,30 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2)
+        month = '0' + month;
+    if (day.length < 2)
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
 function App() {
 
     var columns = [
         { title: "id", field: "id", hidden: true },
         { title: "Avatar", render: rowData => <Avatar maxInitials={1} size={40} round={true} name={rowData === undefined ? " " : rowData.patient} /> },
         { title: "Patient", field: "patient" },
-        { title: "Date", field: "appt_date" },
-        { title: "Comment", field: "comment" },
-        { title: "From", field: "start_time" },
-        { title: "To", field: "end_time" }
+        { title: "Date", field: "appt_date", type: "date"},
+        { title: "From", field: "start_time", type: "time"},
+        { title: "To", field: "end_time", type: "time"},
+        { title: "Comment", field: "comment" }
     ]
     const [data, setData] = useState([]); //table data
 
@@ -78,7 +92,9 @@ function App() {
             errorList.push("Please enter first name")
         }
         if (newData.appt_date === "") {
-            errorList.push("Please enter date")
+            errorList.push("Please enter a valid email")
+        } else {
+            newData.appt_date = formatDate(newData.appt_date)
         }
         if (newData.comment === "") {
             errorList.push("Please enter comment")
@@ -131,6 +147,8 @@ function App() {
         }
         if (newData.appt_date === undefined) {
             errorList.push("Please enter date")
+        } else {
+            newData.appt_date = formatDate(newData.appt_date)
         }
         if (newData.comment === undefined) {
             errorList.push("Please enter comment")
