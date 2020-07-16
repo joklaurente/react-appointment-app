@@ -67,10 +67,43 @@ function checkStartTime(datetime){
     console.log("INPUT TIME!!! " + start_time)
     console.log("MIN TIME!!! " + min_time)
     if (start_time < min_time){
-        console.log("TIME IS INVALID")
+        console.log("START TIME IS INVALID")
         return true
     } else {
-        console.log("TIME IS VALID")
+        console.log("START TIME IS VALID")
+        return false
+    }
+}
+
+function checkEndTime(datetime) {
+    var max_time = new Date();
+    max_time.setHours(17, 0, 59);
+
+    var end_time = new Date(datetime)
+    console.log(end_time)
+    end_time.setFullYear(max_time.getFullYear())
+    end_time.setMonth(max_time.getMonth())
+    end_time.setDate(max_time.getDate())
+
+    console.log("INPUT TIME!!! " + end_time)
+    console.log("MAX TIME!!! " + end_time)
+    if (end_time > max_time) {
+        console.log("END TIME IS INVALID")
+        return true
+    } else {
+        console.log("END TIME IS VALID")
+        return false
+    }
+}
+
+function checkValidTime(start_time, end_time) {
+    console.log("INPUT TIME!!! " + start_time)
+    console.log("END TIME!!! " + end_time)
+    if (start_time > end_time) {
+        console.log("TIME RANGE IS INVALID")
+        return true
+    } else {
+        console.log("TIME RANGE IS VALID")
         return false
     }
 }
@@ -125,9 +158,16 @@ function App() {
             errorList.push("Please enter a valid start time")
         }
 
-
         if (newData.end_time === "") {
             errorList.push("Please enter end time")
+        } else if (checkEndTime(newData.end_time)) {
+            errorList.push("Please enter a valid end time")
+        }
+        
+        if (newData.start_time !== undefined && newData.end_time !== undefined) {
+            if (checkValidTime(newData.start_time, newData.end_time)) {
+                errorList.push("Invalid date range")
+            }
         }
 
 
@@ -187,8 +227,16 @@ function App() {
 
         if (newData.end_time === undefined) {
             errorList.push("Please enter end time")
-        } 
+        } else if (checkEndTime(newData.end_time)){
+            errorList.push("Please enter a valid end time")
+        }
 
+        if (newData.start_time !== undefined && newData.end_time !== undefined) {
+            if (checkValidTime(newData.start_time, newData.end_time))
+            {
+                errorList.push("Invalid date range")
+            }
+        }
 
         if (errorList.length < 1) { //no error
             // api.post(`/appointments`, newData)
