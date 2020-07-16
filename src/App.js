@@ -179,6 +179,11 @@ function App() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(newData),
+                }).then(response => {
+                if (response.status === 400) {
+                    console.log(response.status);
+                    throw new Error("Overbooking");
+                }
                 })
                 .then(res => {
                     const dataUpdate = [...data];
@@ -190,10 +195,9 @@ function App() {
                     setErrorMessages([])
                 })
                 .catch(error => {
-                    setErrorMessages(["Update failed! Server error"])
+                    setErrorMessages([error.toString()])
                     setIserror(true)
                     resolve()
-
                 })
         } else {
             setErrorMessages(errorList)
@@ -246,7 +250,12 @@ function App() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(newData),
-            })
+                }).then(response => {
+                if (response.status === 400) {
+                    console.log(response.status);
+                    throw new Error("Overbooking");
+                }
+                })
                 .then(res => {
                     let dataToAdd = [...data];
                     dataToAdd.push(newData);
@@ -254,9 +263,10 @@ function App() {
                     resolve()
                     setErrorMessages([])
                     setIserror(false)
+                    window.location.reload(false);
                 })
                 .catch(error => {
-                    setErrorMessages(["Cannot add data. Server error!"])
+                    setErrorMessages([error.toString()])
                     setIserror(true)
                     resolve()
                 })
@@ -325,6 +335,9 @@ function App() {
                                 new Promise((resolve) => {
                                     handleRowDelete(oldData, resolve)
                                 }),
+                        }}
+                        options={{
+                            filtering: true
                         }}
                     />
                 </Grid>
