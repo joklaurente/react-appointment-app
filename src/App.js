@@ -42,6 +42,39 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
+function checkIfSunday(datetime){
+    var dt = new Date(datetime);
+    console.log("DAY!!! " + dt)
+    if (dt.getDay() === 0){
+        console.log("DATE IS SUNDAY")
+        return true
+    } else{
+        console.log("DATE IS NOT SUNDAY")
+        return false
+    }
+}
+
+function checkStartTime(datetime){
+    var min_time = new Date();
+    min_time.setHours(9, 0, 0); 
+
+    var start_time = new Date(datetime)
+    console.log(start_time)
+    start_time.setFullYear(min_time.getFullYear())
+    start_time.setMonth(min_time.getMonth())
+    start_time.setDate(min_time.getDate())
+
+    console.log("INPUT TIME!!! " + start_time)
+    console.log("MIN TIME!!! " + min_time)
+    if (start_time < min_time){
+        console.log("TIME IS INVALID")
+        return true
+    } else {
+        console.log("TIME IS VALID")
+        return false
+    }
+}
+
 function App() {
 
     var columns = [
@@ -79,6 +112,8 @@ function App() {
         }
         if (newData.appt_date === "") {
             errorList.push("Please enter a valid email")
+        } else if (checkIfSunday(newData.appt_date)) {
+            errorList.push("Please enter a valid date")
         }
 
         if (newData.comment === "") {
@@ -86,6 +121,8 @@ function App() {
         }
         if (newData.start_time === "") {
             errorList.push("Please enter start time")
+        } else if (checkStartTime(newData.start_time)) {
+            errorList.push("Please enter a valid start time")
         }
 
 
@@ -135,14 +172,18 @@ function App() {
         }
         if (newData.appt_date === undefined) {
             errorList.push("Please enter date")
-        } 
+        } else if (checkIfSunday(newData.appt_date)) {
+            errorList.push("Please enter a valid date")
+        }
 
         if (newData.comment === undefined) {
             errorList.push("Please enter comment")
         }
         if (newData.start_time === undefined) {
             errorList.push("Please enter start time")
-        } 
+        } else if (checkStartTime(newData.start_time)) {
+            errorList.push("Please enter a valid start time")
+        }
 
         if (newData.end_time === undefined) {
             errorList.push("Please enter end time")
