@@ -42,20 +42,6 @@ const tableIcons = {
     ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
 };
 
-function formatDate(date) {
-    var d = new Date(date),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-
-    return [year, month, day].join('-');
-}
-
 function App() {
 
     var columns = [
@@ -93,18 +79,20 @@ function App() {
         }
         if (newData.appt_date === "") {
             errorList.push("Please enter a valid email")
-        } else {
-            newData.appt_date = formatDate(newData.appt_date)
         }
+
         if (newData.comment === "") {
             errorList.push("Please enter comment")
         }
         if (newData.start_time === "") {
             errorList.push("Please enter start time")
         }
+
+
         if (newData.end_time === "") {
             errorList.push("Please enter end time")
         }
+
 
         if (errorList.length < 1) {
             // api.patch("/appointments/" + newData.id, newData)
@@ -147,18 +135,19 @@ function App() {
         }
         if (newData.appt_date === undefined) {
             errorList.push("Please enter date")
-        } else {
-            newData.appt_date = formatDate(newData.appt_date)
-        }
+        } 
+
         if (newData.comment === undefined) {
             errorList.push("Please enter comment")
         }
         if (newData.start_time === undefined) {
             errorList.push("Please enter start time")
-        }
+        } 
+
         if (newData.end_time === undefined) {
             errorList.push("Please enter end time")
-        }
+        } 
+
 
         if (errorList.length < 1) { //no error
             // api.post(`/appointments`, newData)
