@@ -148,12 +148,12 @@ function App() {
         //validation
         let errorList = []
         if (newData.patient === "") {
-            errorList.push("Please enter first name")
+            errorList.push("Please enter patient name")
         }
         if (newData.appt_date === "") {
-            errorList.push("Please enter a valid email")
+            errorList.push("Please enter date")
         } else if (checkIfSunday(newData.appt_date)) {
-            errorList.push("Please enter a valid date")
+            errorList.push("Invalid date! Appointments are only allowed from 9:00AM - 5:00 PM Mon - Sat.")
         }
 
         if (newData.comment === "") {
@@ -162,18 +162,18 @@ function App() {
         if (newData.start_time === "") {
             errorList.push("Please enter start time")
         } else if (checkStartTime(newData.start_time)) {
-            errorList.push("Please enter a valid start time")
+            errorList.push("Invalid time! Appointments are only allowed from 9:00AM - 5:00 PM Mon - Sat.")
         }
 
         if (newData.end_time === "") {
             errorList.push("Please enter end time")
         } else if (checkEndTime(newData.end_time)) {
-            errorList.push("Please enter a valid end time")
+            errorList.push("Invalid time! Appointments are only allowed from 9:00AM - 5:00 PM Mon - Sat.")
         }
         
         if (newData.start_time !== undefined && newData.end_time !== undefined) {
             if (checkValidTime(newData.start_time, newData.end_time)) {
-                errorList.push("Invalid date range")
+                errorList.push("Invalid time! Start time must be earlier than end time.")
             }
         }
 
@@ -189,7 +189,7 @@ function App() {
                 }).then(response => {
                 if (response.status === 400) {
                     console.log(response.status);
-                    throw new Error("Overbooking");
+                    throw new Error("Selected schedule is already taken! Please choose another date.");
                 }
                 })
                 .then(res => {
@@ -224,7 +224,7 @@ function App() {
         if (newData.appt_date === undefined) {
             errorList.push("Please enter date")
         } else if (checkIfSunday(newData.appt_date)) {
-            errorList.push("Please enter a valid date")
+            errorList.push("Invalid date! Appointments are only allowed from 9:00AM - 5:00 PM Mon - Sat.")
         }
 
         if (newData.comment === undefined) {
@@ -233,19 +233,19 @@ function App() {
         if (newData.start_time === undefined) {
             errorList.push("Please enter start time")
         } else if (checkStartTime(newData.start_time)) {
-            errorList.push("Please enter a valid start time")
+            errorList.push("Invalid time! Appointments are only allowed from 9:00AM - 5:00 PM Mon - Sat.")
         }
 
         if (newData.end_time === undefined) {
             errorList.push("Please enter end time")
         } else if (checkEndTime(newData.end_time)){
-            errorList.push("Please enter a valid end time")
+            errorList.push("Invalid time! Appointments are only allowed from 9:00AM - 5:00 PM Mon - Sat.")
         }
 
         if (newData.start_time !== undefined && newData.end_time !== undefined) {
             if (checkValidTime(newData.start_time, newData.end_time))
             {
-                errorList.push("Invalid date range")
+                errorList.push("Invalid time! Start time must be earlier than end time.")
             }
         }
 
@@ -260,7 +260,7 @@ function App() {
                 }).then(response => {
                 if (response.status === 400) {
                     console.log(response.status);
-                    throw new Error("Overbooking");
+                    throw new Error("Selected schedule is already taken! Please choose another date.");
                 }
                 })
                 .then(res => {
