@@ -87,7 +87,7 @@ function checkEndTime(datetime) {
     end_time.setDate(max_time.getDate())
 
     console.log("INPUT TIME!!! " + end_time)
-    console.log("MAX TIME!!! " + end_time)
+    console.log("MAX TIME!!! " + max_time)
     if (end_time > max_time) {
         console.log("END TIME IS INVALID")
         return true
@@ -98,9 +98,11 @@ function checkEndTime(datetime) {
 }
 
 function checkValidTime(start_time, end_time) {
-    console.log("INPUT TIME!!! " + start_time)
-    console.log("END TIME!!! " + end_time)
-    if (start_time > end_time) {
+    var st = new Date(start_time)
+    var et = new Date(end_time)
+    console.log("CHECK START TIME!!! " + st)
+    console.log("CHECK END TIME!!! " + et)
+    if (st > et) {
         console.log("TIME RANGE IS INVALID")
         return true
     } else {
@@ -116,7 +118,7 @@ function App() {
     console.log(value)
 
     var columns = [
-        { title: "id", field: "id", hidden: true },
+        { title: "ID", field: "id", editable: "never", initialEditValue: "0"},
         { title: "Avatar", render: rowData => <Avatar maxInitials={1} size={40} round={true} name={rowData === undefined ? " " : rowData.patient} /> },
         { title: "Patient", field: "patient" },
         { title: "Date", field: "appt_date", type: "date"},
@@ -339,9 +341,6 @@ function App() {
                                 new Promise((resolve) => {
                                     handleRowDelete(oldData, resolve)
                                 }),
-                        }}
-                        options={{
-                            filtering: true
                         }}
                     />
                     <div>
