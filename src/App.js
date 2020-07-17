@@ -21,6 +21,7 @@ import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import Alert from '@material-ui/lab/Alert';
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -109,6 +110,10 @@ function checkValidTime(start_time, end_time) {
 }
 
 function App() {
+    const current = new Date()
+    const [value, changeDate] = useState([new Date(current.getFullYear(), current.getMonth(), 1), new Date(current.getFullYear(), current.getMonth()+1, 1)]);
+    console.log("VALUE DATE!!!")
+    console.log(value)
 
     var columns = [
         { title: "id", field: "id", hidden: true },
@@ -126,7 +131,7 @@ function App() {
     const [errorMessages, setErrorMessages] = useState([])
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/appointments/')
+        fetch(`http://localhost:8000/api/appointments/?appt_date__gte=${value[0].toISOString()}&appt_date__lte=${value[1].toISOString()}`)
             .then(response => response.json())
             .then(data => {
                 console.log(data)
@@ -135,7 +140,7 @@ function App() {
             .catch(error => {
                 console.log(error)
             })
-    }, [])
+    }, [value[0].toISOString()], value[1].toISOString())
 
     const handleRowUpdate = (newData, oldData, resolve) => {
         //validation
@@ -300,7 +305,6 @@ function App() {
             })
     }
 
-
     return (
         <div className="App">
 
@@ -340,6 +344,13 @@ function App() {
                             filtering: true
                         }}
                     />
+                    <div>
+                        <DateRangePicker
+                            onChange={changeDate}
+                            value={value}
+                            clearIcon={null}
+                        />
+                    </div>
                 </Grid>
                 <Grid item xs={3}></Grid>
             </Grid>
